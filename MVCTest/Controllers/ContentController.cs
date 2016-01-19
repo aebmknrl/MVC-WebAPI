@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using MVCTest.Models;
+using System.Web;
 
 namespace MVCTest.Controllers
 {
@@ -32,7 +33,7 @@ namespace MVCTest.Controllers
         [Authorize]
         public string InfoUser()
         {
-            return "Hola user";
+            return HttpContext.Current.User.IsInRole("User").ToString();
         }
 
         [Route("GetRoles")]

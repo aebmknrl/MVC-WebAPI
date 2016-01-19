@@ -16,6 +16,7 @@ using Microsoft.Owin.Security.OAuth;
 using MVCTest.Models;
 using MVCTest.Providers;
 using MVCTest.Results;
+using MVCTest.Logic;
 
 namespace MVCTest.Controllers
 {
@@ -336,7 +337,8 @@ namespace MVCTest.Controllers
             {
                 return GetErrorResult(result);
             }
-
+            // Codigo de Ali para agregar el rol "User" al usuario inmediatamente es creado
+            DAO.addRoleToUser(user);
             return Ok();
         }
 
