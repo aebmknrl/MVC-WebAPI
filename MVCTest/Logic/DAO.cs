@@ -10,14 +10,13 @@ namespace MVCTest.Logic
 {
     public class DAO
     {
-        public static void addRoleToUser(ApplicationUser user)
+        public static void addRoleToUser(ApplicationUser user, string role)
         {
-            // EL SIGUIENTE CODIGO AGREGA AL USUARIO EL ROL "User"
+            // EL SIGUIENTE CODIGO AGREGA AL USUARIO UN ROL
             ApplicationDbContext context = new ApplicationDbContext(); 
             var userStore = new UserStore<ApplicationUser>(context);
             var userManager = new UserManager<ApplicationUser>(userStore);
-            userManager.AddToRole(user.Id, "User");
-
+            userManager.AddToRole(user.Id,role);
         }
     }
 }

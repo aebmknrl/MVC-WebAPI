@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Owin;
 using Owin;
 using MVCTest.Logic;
+using System.Web.Security;
 
 [assembly: OwinStartup(typeof(MVCTest.Startup))]
 
@@ -14,6 +15,7 @@ namespace MVCTest
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            
         }
     }
 }

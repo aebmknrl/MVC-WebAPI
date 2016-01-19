@@ -17,6 +17,7 @@ using MVCTest.Models;
 using MVCTest.Providers;
 using MVCTest.Results;
 using MVCTest.Logic;
+using System.Web.Http.Results;
 
 namespace MVCTest.Controllers
 {
@@ -338,7 +339,7 @@ namespace MVCTest.Controllers
                 return GetErrorResult(result);
             }
             // Codigo de Ali para agregar el rol "User" al usuario inmediatamente es creado
-            DAO.addRoleToUser(user);
+            DAO.addRoleToUser(user, "User");
             return Ok();
         }
 
@@ -384,6 +385,22 @@ namespace MVCTest.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+        // Nuevos métodos para el trabajo con roles
+    
+        /// <summary>
+        /// Método para obtener los roles del usuario
+        /// </summary>
+        [HttpGet]
+        [Route("GetUserRoles")]
+        [Authorize]
+        public List<UserRole> GetUserRoles() {
+            //Obtener usuario actual
+            string usuario = User.Identity.Name;
+            RolesTasks objRolesTask = new RolesTasks();
+            return objRolesTask.userRoles(usuario);
+                
         }
 
         #region Helpers
