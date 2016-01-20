@@ -26,38 +26,42 @@ namespace MVCTest.Models
             return ListaRoles;
         }
 
-        public List<UserRole> userRoles(string user)
+        public UserRole userRoles(string user)
         {
-            List<UserRole> UserRolesCollection = new List<UserRole>();
+            // Context de base de datos
+            ApplicationDbContext db = new ApplicationDbContext();
 
-            
+            var rolesUsuario = (from x in db.Users
+                                where x.UserName == user
+                                select x.Roles).FirstOrDefault();
 
-            List<string> userRoles = Roles.GetRolesForUser(user).ToList();
-
-            List<Role> listOfRoles = obtainRoles();
-
-            foreach (string rol in userRoles)
+            // Obtener lista de id de roles
+          
+            List<Role> lstRolesId = new List<Role>();
+            foreach (IdentityUserRole role in rolesUsuario)
             {
-                string _id = (from x in listOfRoles
-                              where x.Rol == rol
-                              select x.id).FirstOrDefault();
-                UserRolesCollection.Add(new UserRole
+               
+                lstRolesId.Add(new Role
                 {
-                    id = _id,
-                    Rol = rol,
-                    User = user,
-                    DateOfQuery = DateTime.Now.ToString()
+                    id = role.RoleId
                 });
             }
 
-            return UserRolesCollection;
+            // Obtener lista de nombres correspondientes a los roles id
+            foreach (Role rolId in lstRolesId)
+            {
+                string queryRolName = (from x in db.Roles
+                                    where x.Id == rolId.id
+                                    select x.Name).FirstOrDefault();
+
+                rolId.Rol = queryRolName;
+            }
+
+
+            return new UserRole(user,lstRolesId);
 
         }
-
-        public static void setOnRoles()
-        {
-            Roles.Enabled = true;
-        }
+        
     }
     public class Role
     {
@@ -65,11 +69,19 @@ namespace MVCTest.Models
         public string Rol { get; set; }
     }
 
-    public class UserRole : Role
+    public class UserRole
     {
         public string User { get; set; }
-        public string DateOfQuery { get; set; }
+        public DateTime DateOfQuery { get; }
+        public List<Role> Roles { get; set; }
+
+        // Constructor
+        public UserRole(string User, List<Role> Roles)
+        {
+            this.DateOfQuery = DateTime.Now;
+            this.User = User;
+            this.Roles = Roles;
+        }
     }
 
-
-}
+    }

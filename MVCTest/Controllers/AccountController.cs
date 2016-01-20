@@ -395,12 +395,27 @@ namespace MVCTest.Controllers
         [HttpGet]
         [Route("GetUserRoles")]
         [Authorize]
-        public List<UserRole> GetUserRoles() {
+        public UserRole GetUserRoles() {
             //Obtener usuario actual
             string usuario = User.Identity.Name;
             RolesTasks objRolesTask = new RolesTasks();
             return objRolesTask.userRoles(usuario);
                 
+        }
+
+        /// <summary>
+        /// Método para agregar un roles a usuario
+        /// </summary>
+        [HttpPost]
+        [Route("SetUserRoles")]
+        [Authorize]
+        public UserRole SetUserRoles()
+        {
+            //Obtener usuario actual
+            string usuario = User.Identity.Name;
+            RolesTasks objRolesTask = new RolesTasks();
+            return objRolesTask.userRoles(usuario);
+
         }
 
         #region Helpers
