@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using MVCTest.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +62,45 @@ namespace MVCTest.Models
             return new UserRole(user,lstRolesId);
 
         }
+
+        public object addUserRoles(string userID, List<Role> newUserRoles)
+        {
+            // Context de bd
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            try
+            { 
+                ICollection<IdentityUserRole> queryRolesUser = (from x in db.Users
+                                  where x.Id == userID
+                                  select x.Roles).FirstOrDefault();
+                                 
+                var userStore = new UserStore<ApplicationUser>(db);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+           
+                foreach (Role role in newUserRoles)
+                {
+                    var query = (from y in queryRolesUser
+                                 where y.RoleId == role.id
+                                 select y).Count();
+
+                    if (query <= 0)
+                    {
+                        userManager.AddToRole(userID, role.Rol);
+                    }
+                }
+
+                return new Info("Ok", "Roles agregados correctamente al Usuario: " + userID);
+            }
+            catch (Exception e)
+            {
+                return new InfoError(e.StackTrace,"Error",e.Message);
+            }
+            
+            
+        }
         
     }
+
     public class Role
     {
         public string id { get; set; }
@@ -76,6 +114,11 @@ namespace MVCTest.Models
         public List<Role> Roles { get; set; }
 
         // Constructor
+        public UserRole()
+        {
+            this.Roles = null;
+            this.User = "";
+        }
         public UserRole(string User, List<Role> Roles)
         {
             this.DateOfQuery = DateTime.Now;

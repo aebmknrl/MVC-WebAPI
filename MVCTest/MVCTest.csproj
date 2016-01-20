@@ -249,6 +249,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Logic\DAO.cs" />
+    <Compile Include="Logic\Info.cs" />
     <Compile Include="Migrations\201601160209469_InitialCreate.cs" />
     <Compile Include="Migrations\201601160209469_InitialCreate.Designer.cs">
       <DependentUpon>201601160209469_InitialCreate.cs</DependentUpon>

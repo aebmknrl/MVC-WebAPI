@@ -18,6 +18,7 @@ using MVCTest.Providers;
 using MVCTest.Results;
 using MVCTest.Logic;
 using System.Web.Http.Results;
+using System.Net;
 
 namespace MVCTest.Controllers
 {
@@ -406,15 +407,14 @@ namespace MVCTest.Controllers
         /// <summary>
         /// Método para agregar un roles a usuario
         /// </summary>
-        [HttpPost]
+        [HttpPut]
         [Route("SetUserRoles")]
-        [Authorize]
-        public UserRole SetUserRoles()
+        [Authorize(Roles="Admin")]
+        public HttpResponseMessage SetUserRoles([FromBody]UserRole user)
         {
-            //Obtener usuario actual
-            string usuario = User.Identity.Name;
             RolesTasks objRolesTask = new RolesTasks();
-            return objRolesTask.userRoles(usuario);
+            var result =  objRolesTask.addUserRoles(user.User, user.Roles);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
 
         }
 
