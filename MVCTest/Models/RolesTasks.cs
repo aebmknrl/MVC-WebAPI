@@ -70,10 +70,23 @@ namespace MVCTest.Models
 
             try
             { 
+                // Obtengo los roles del usuario
                 ICollection<IdentityUserRole> queryRolesUser = (from x in db.Users
                                   where x.Id == userID
                                   select x.Roles).FirstOrDefault();
-                                 
+
+
+                // Agrego a los nombres de roles sus respectivos ID de rol
+                foreach (Role role in newUserRoles)
+                {
+                    string queryIdOfRoles = (from x in db.Roles
+                                            where x.Name == role.Rol
+                                            select x.Id).FirstOrDefault();
+                    newUserRoles[newUserRoles.IndexOf(role)].id = queryIdOfRoles;
+
+                }   
+                
+                // Agregar roles                   
                 var userStore = new UserStore<ApplicationUser>(db);
                 var userManager = new UserManager<ApplicationUser>(userStore);
            
@@ -82,14 +95,14 @@ namespace MVCTest.Models
                     var query = (from y in queryRolesUser
                                  where y.RoleId == role.id
                                  select y).Count();
-
+                    // Si el usuario no posee el rol => agregarlo, de lo contrario lo ignoro
                     if (query <= 0)
                     {
                         userManager.AddToRole(userID, role.Rol);
                     }
                 }
 
-                return new Info("Ok", "Roles agregados correctamente al Usuario: " + userID);
+                return new Info("Ok", "Roles actualizados correctamente al Usuario: " + userID);
             }
             catch (Exception e)
             {
